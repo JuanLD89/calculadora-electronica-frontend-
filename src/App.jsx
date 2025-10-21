@@ -111,7 +111,6 @@ function App() {
         </div>
       )}
 
-
       {formula && (
         <div style={{ marginTop: '1rem' }}>
           <img 
@@ -133,7 +132,6 @@ function App() {
           />
         </div>
       )}
-
 
       <div style={{ marginTop: "20px" }}>
         {(campos[formula] || []).map((c) => (
