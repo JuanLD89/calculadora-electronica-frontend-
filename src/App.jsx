@@ -17,7 +17,7 @@ function App() {
 
   const calcular = async () => {
     let data = {};
-  
+
     if (formula === "ohm") {
       if (subformula === "voltaje") {
         data = {
@@ -35,12 +35,25 @@ function App() {
           valores: { V: valores.V, I: valores.I },
         };
       } else {
-        alert("Selecciona qué deseas calcular");
+        alert("Selecciona qué deseas calcular (Ley de Ohm)");
+        return;
+      }
+    } else if (formula === "potencia") {
+      if (subformula === "potencia") {
+        data = { formula: "potencia", valores: { V: valores.V, I: valores.I } };
+      } else if (subformula === "voltaje") {
+        data = { formula: "potencia_voltaje", valores: { P: valores.P, I: valores.I } };
+      } else if (subformula === "corriente") {
+        data = { formula: "potencia_corriente", valores: { P: valores.P, V: valores.V } };
+      } else {
+        alert("Selecciona qué deseas calcular (Potencia)");
         return;
       }
     } else {
+      // resto de fórmulas ya existentes (resistencias, divisor...)
       data = { formula, valores };
     }
+
   
     try {
       console.log("Payload a enviar:", JSON.stringify(data));
@@ -75,11 +88,20 @@ function App() {
         : subformula === "resistencia"
         ? ["V", "I"]
         : [], // si no se ha seleccionado subfórmula
-    potencia: ["V", "I"],
+    potencia:
+      subformula === "potencia"
+        ? ["V", "I"]
+        : subformula === "voltaje"
+        ? ["P", "I"]
+        : subformula === "corriente"
+        ? ["P", "V"]
+        : [],
+  
     res_serie: ["R1", "R2"],
     res_paralelo: ["R1", "R2"],
     divisor: ["Vin", "R1", "R2"],
   };
+  
 
   return (
     <div style={{ textAlign: "center", marginTop: "40px" }}>
@@ -110,6 +132,24 @@ function App() {
           </select>
         </div>
       )}
+
+      {/* Si la fórmula seleccionada es Potencia, mostrar opciones */}
+      {formula === "potencia" && (
+        <div style={{ marginTop: "10px" }}>
+          <label>¿Qué deseas calcular?</label>
+          <select
+            value={subformula || ""}
+            onChange={(e) => setSubformula(e.target.value)}
+            style={{ marginLeft: "10px" }}
+          >
+            <option value="">Selecciona una opción</option>
+            <option value="potencia">Potencia (P = V × I)</option>
+            <option value="voltaje">Voltaje (V = P / I)</option>
+            <option value="corriente">Corriente (I = P / V)</option>
+          </select>
+        </div>
+      )}
+
 
       {formula && (
         <div style={{ marginTop: '1rem' }}>
