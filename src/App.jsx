@@ -3,7 +3,7 @@ import divisor from './assets/divisor.png';
 import serie from './assets/res_serie.png';
 import paralelo from './assets/res_paralelo.png';
 import potencia from './assets/potencia.png';
-import ohm from './assets/ohm.jpg';
+import ohm from './assets/Ohm.jpg';
 
 function App() {
   const [formula, setFormula] = useState("ohm");
