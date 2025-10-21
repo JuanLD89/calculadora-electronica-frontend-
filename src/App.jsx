@@ -11,7 +11,6 @@ function App() {
   const [resultado, setResultado] = useState(null);
   const [subformula, setSubformula] = useState("");
 
-
   const cambiarValor = (campo, valor) => {
     setValores((prev) => ({ ...prev, [campo]: valor }));
   };
@@ -64,8 +63,6 @@ function App() {
       setResultado("Error de conexión con el servidor");
     }
   };
-  
-  
 
   // Campos dinámicos según la fórmula
   // Campos dinámicos según la fórmula y subfórmula

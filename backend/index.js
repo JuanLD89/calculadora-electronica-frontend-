@@ -49,14 +49,14 @@ app.post("/calcular", (req, res) => {
         (Number(valores.R2) / (Number(valores.R1) + Number(valores.R2)));
       break;
     default:
-      console.log("🚫 Fórmula no soportada:", f);
+      console.log("Fórmula no soportada:", f);
       return res.status(400).json({ error: "Fórmula no soportada" });
   }
 
-  console.log("✅ Resultado:", resultado);
+  console.log("Resultado:", resultado);
   res.json({ resultado });
 });
 
 app.listen(PORT, () => {
-  console.log(`🚀 Servidor local ejecutándose en http://localhost:${PORT}`);
+  console.log(`Servidor local ejecutándose en http://localhost:${PORT}`);
 });
