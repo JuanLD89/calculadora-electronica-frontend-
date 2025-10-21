@@ -81,7 +81,6 @@ function App() {
     divisor: ["Vin", "R1", "R2"],
   };
 
-
   return (
     <div style={{ textAlign: "center", marginTop: "40px" }}>
       <h1> Calculadora Electrónica</h1>
