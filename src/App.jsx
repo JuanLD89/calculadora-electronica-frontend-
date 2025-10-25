@@ -6,6 +6,8 @@ import potencia from './assets/potencia.png';
 import ohm from './assets/Ohm.jpg';
 
 function App() {
+  const [numResistenciasSerie, setNumResistenciasSerie] = useState(2);
+  const [resistenciasSerie, setResistenciasSerie] = useState(["", ""]);
   const [formula, setFormula] = useState("ohm");
   const [valores, setValores] = useState({});
   const [resultado, setResultado] = useState(null);
@@ -49,7 +51,15 @@ function App() {
         alert("Selecciona qué deseas calcular (Potencia)");
         return;
       }
-    } else {
+    } else if (formula === "res_serie") {
+      data = {
+        formula: "res_serie",
+        valores: Object.fromEntries(
+          resistenciasSerie.map((r, i) => [`R${i + 1}`, r])
+        ),
+      };
+    }
+    else {
       // resto de fórmulas ya existentes (resistencias, divisor...)
       data = { formula, valores };
     }
@@ -104,19 +114,35 @@ function App() {
   
 
   return (
-    <div style={{ textAlign: "center", marginTop: "40px" }}>
-      <h1> Calculadora Electrónica</h1>
-
+    <div
+      style={{
+        textAlign: "center",
+        marginTop: "40px",
+        backgroundColor: "#f2f2f2", // fondo general, cámbialo si quieres otro color
+        minHeight: "100vh",
+        padding: "30px",
+      }}
+    >
+      <h1>Calculadora Electrónica</h1>
+  
       <label>Selecciona una fórmula:</label>
-      <select value={formula} onChange={(e) => { setFormula(e.target.value); setValores({}); setResultado(null); }}>
+      <select
+        value={formula}
+        onChange={(e) => {
+          setFormula(e.target.value);
+          setValores({});
+          setResultado(null);
+        }}
+        style={{ marginLeft: "10px" }}
+      >
         <option value="ohm">Ley de Ohm (V = I × R)</option>
         <option value="potencia">Potencia (P = V × I)</option>
         <option value="res_serie">Resistencias en serie</option>
         <option value="res_paralelo">Resistencias en paralelo</option>
         <option value="divisor">Divisor de tensión</option>
       </select>
-
-      {/* Si la fórmula seleccionada es la Ley de Ohm, mostrar opciones */}
+  
+      {/* Subfórmulas Ohm */}
       {formula === "ohm" && (
         <div style={{ marginTop: "10px" }}>
           <label>¿Qué deseas calcular?</label>
@@ -132,8 +158,8 @@ function App() {
           </select>
         </div>
       )}
-
-      {/* Si la fórmula seleccionada es Potencia, mostrar opciones */}
+  
+      {/* Subfórmulas Potencia */}
       {formula === "potencia" && (
         <div style={{ marginTop: "10px" }}>
           <label>¿Qué deseas calcular?</label>
@@ -149,48 +175,117 @@ function App() {
           </select>
         </div>
       )}
-
-
+  
+      {/* Imagen ilustrativa */}
       {formula && (
-        <div style={{ marginTop: '1rem' }}>
-          <img 
+        <div style={{ marginTop: "1rem" }}>
+          <img
             src={
-              formula === 'divisor'
+              formula === "divisor"
                 ? divisor
-                : formula === 'res_serie'
+                : formula === "res_serie"
                 ? serie
-                : formula === 'res_paralelo'
+                : formula === "res_paralelo"
                 ? paralelo
-                : formula === 'potencia'
+                : formula === "potencia"
                 ? potencia
-                : formula === 'ohm'
+                : formula === "ohm"
                 ? ohm
                 : null
             }
             alt={formula}
-            style={{ width: '50%', borderRadius: '20px', marginTop: '1rem' }}
+            style={{
+              width: "50%",
+              borderRadius: "10px",
+              marginTop: "1rem",
+            }}
           />
         </div>
       )}
-
-      <div style={{ marginTop: "20px" }}>
-        {(campos[formula] || []).map((c) => (
-          <input
-            key={c}
-            type="number"
-            placeholder={c}
-            value={valores[c] || ""}
-            onChange={(e) => cambiarValor(c, e.target.value)}
-            style={{ margin: "5px" }}
-          />
-        ))}
+  
+      {/* Campos dinámicos */}
+      <div style={{
+        marginTop: "15px",
+        flexWrap: "wrap",
+        justifyContent: "center",
+        gap: "10px",
+        maxWidth: "600px",
+        margin: "15px auto",
+      }}>
+        {formula === "res_serie" ? (
+          <>
+            <label>
+              Número de resistencias:
+              <input
+                type="number"
+                min="2"
+                max="15"
+                value={numResistenciasSerie}
+                onChange={(e) => {
+                  const n = parseInt(e.target.value);
+                  setNumResistenciasSerie(n);
+                  const nuevas = [...resistenciasSerie];
+                  if (n > nuevas.length) {
+                    while (nuevas.length < n) nuevas.push("");
+                  } else {
+                    nuevas.length = n;
+                  }
+                  setResistenciasSerie(nuevas);
+                }}
+                style={{ width: "60px", marginLeft: "10px" }}
+              />
+            </label>
+  
+            <div
+              style={{
+                marginTop: "15px",
+                display: "flex",
+                flexWrap: "wrap",
+                justifyContent: "center",
+              }}
+            >
+              {resistenciasSerie.map((valor, i) => (
+                <input
+                  key={i}
+                  type="number"
+                  placeholder={`R${i + 1}`}
+                  value={valor}
+                  onChange={(e) => {
+                    const nuevas = [...resistenciasSerie];
+                    nuevas[i] = e.target.value;
+                    setResistenciasSerie(nuevas);
+                  }}
+                  style={{
+                    width: "80px",
+                    margin: "5px",
+                    width: "100px",
+                  }}
+                />
+              ))}
+            </div>
+          </>
+        ) : (
+          (campos[formula] || []).map((c) => (
+            <input
+              key={c}
+              type="number"
+              placeholder={c}
+              value={valores[c] || ""}
+              onChange={(e) => cambiarValor(c, e.target.value)}
+              style={{ margin: "5px" }}
+            />
+          ))
+        )}
       </div>
-
-      <button onClick={calcular} style={{ marginTop: "10px" }}>Calcular</button>
-
+  
+      <button onClick={calcular} style={{ marginTop: "10px" }}>
+        Calcular
+      </button>
+  
       {resultado && <h2 style={{ marginTop: "20px" }}>{resultado}</h2>}
     </div>
   );
+  
 }
 
 export default App;
