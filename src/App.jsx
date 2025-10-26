@@ -6,6 +6,8 @@ import potencia from './assets/potencia.png';
 import ohm from './assets/Ohm.jpg';
 
 function App() {
+  const [numResistenciasParalelo, setNumResistenciasParalelo] = useState(2);
+  const [resistenciasParalelo, setResistenciasParalelo] = useState(["", ""]);
   const [numResistenciasSerie, setNumResistenciasSerie] = useState(2);
   const [resistenciasSerie, setResistenciasSerie] = useState(["", ""]);
   const [formula, setFormula] = useState("ohm");
@@ -58,7 +60,15 @@ function App() {
           resistenciasSerie.map((r, i) => [`R${i + 1}`, r])
         ),
       };
+    } else if (formula === "res_paralelo") {
+      data = {
+        formula: "res_paralelo",
+        valores: Object.fromEntries(
+          resistenciasParalelo.map((r, i) => [`R${i + 1}`, r])
+        ),
+      };
     }
+    
     else {
       // resto de fórmulas ya existentes (resistencias, divisor...)
       data = { formula, valores };
@@ -235,13 +245,16 @@ function App() {
                 style={{ width: "60px", marginLeft: "10px" }}
               />
             </label>
-  
+
             <div
               style={{
                 marginTop: "15px",
                 display: "flex",
                 flexWrap: "wrap",
                 justifyContent: "center",
+                gap: "10px",
+                maxWidth: "600px",
+                margin: "15px auto",
               }}
             >
               {resistenciasSerie.map((valor, i) => (
@@ -256,9 +269,64 @@ function App() {
                     setResistenciasSerie(nuevas);
                   }}
                   style={{
-                    width: "80px",
-                    margin: "5px",
                     width: "100px",
+                    padding: "5px",
+                    textAlign: "center",
+                  }}
+                />
+              ))}
+            </div>
+          </>
+        ) : formula === "res_paralelo" ? (
+          <>
+            <label>
+              Número de resistencias:
+              <input
+                type="number"
+                min="2"
+                max="15"
+                value={numResistenciasParalelo}
+                onChange={(e) => {
+                  const n = parseInt(e.target.value);
+                  setNumResistenciasParalelo(n);
+                  const nuevas = [...resistenciasParalelo];
+                  if (n > nuevas.length) {
+                    while (nuevas.length < n) nuevas.push("");
+                  } else {
+                    nuevas.length = n;
+                  }
+                  setResistenciasParalelo(nuevas);
+                }}
+                style={{ width: "60px", marginLeft: "10px" }}
+              />
+            </label>
+
+            <div
+              style={{
+                marginTop: "15px",
+                display: "flex",
+                flexWrap: "wrap",
+                justifyContent: "center",
+                gap: "10px",
+                maxWidth: "600px",
+                margin: "15px auto",
+              }}
+            >
+              {resistenciasParalelo.map((valor, i) => (
+                <input
+                  key={i}
+                  type="number"
+                  placeholder={`R${i + 1}`}
+                  value={valor}
+                  onChange={(e) => {
+                    const nuevas = [...resistenciasParalelo];
+                    nuevas[i] = e.target.value;
+                    setResistenciasParalelo(nuevas);
+                  }}
+                  style={{
+                    width: "100px",
+                    padding: "5px",
+                    textAlign: "center",
                   }}
                 />
               ))}
@@ -276,6 +344,7 @@ function App() {
             />
           ))
         )}
+
       </div>
   
       <button onClick={calcular} style={{ marginTop: "10px" }}>
