@@ -4,6 +4,7 @@ import serie from './assets/res_serie.png';
 import paralelo from './assets/res_paralelo.png';
 import potencia from './assets/potencia.png';
 import ohm from './assets/Ohm.jpg';
+//import divisorCorriente from './assets/divisor_corriente.png';
 
 function App() {
   const [numResistenciasParalelo, setNumResistenciasParalelo] = useState(2);
@@ -67,7 +68,13 @@ function App() {
           resistenciasParalelo.map((r, i) => [`R${i + 1}`, r])
         ),
       };
+    } else if (formula === "divisor_corriente") {
+      data = {
+        formula: "divisor_corriente",
+        valores: { It: valores.It, R1: valores.R1, R2: valores.R2 },
+      };
     }
+    
     
     else {
       // resto de fórmulas ya existentes (resistencias, divisor...)
@@ -120,6 +127,7 @@ function App() {
     res_serie: ["R1", "R2"],
     res_paralelo: ["R1", "R2"],
     divisor: ["Vin", "R1", "R2"],
+    divisor_corriente: ["It", "R1", "R2"],
   };
   
 
@@ -150,6 +158,8 @@ function App() {
         <option value="res_serie">Resistencias en serie</option>
         <option value="res_paralelo">Resistencias en paralelo</option>
         <option value="divisor">Divisor de tensión</option>
+        <option value="divisor_corriente">Divisor de corriente</option>
+
       </select>
   
       {/* Subfórmulas Ohm */}
@@ -201,6 +211,8 @@ function App() {
                 ? potencia
                 : formula === "ohm"
                 ? ohm
+                //: formula === "divisor_corriente"
+                //? divisorCorriente
                 : null
             }
             alt={formula}
