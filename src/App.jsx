@@ -11,6 +11,9 @@ function App() {
   const [resistenciasParalelo, setResistenciasParalelo] = useState(["", ""]);
   const [numResistenciasSerie, setNumResistenciasSerie] = useState(2);
   const [resistenciasSerie, setResistenciasSerie] = useState(["", ""]);
+  const [numResistenciasDivisor, setNumResistenciasDivisor] = useState(2);
+  const [resistenciasDivisor, setResistenciasDivisor] = useState(["", ""]);
+  
   const [formula, setFormula] = useState("ohm");
   const [valores, setValores] = useState({});
   const [resultado, setResultado] = useState(null);
@@ -69,9 +72,15 @@ function App() {
         ),
       };
     } else if (formula === "divisor_corriente") {
+      const valoresObj = { It: valores.It }; 
+    
+      resistenciasParalelo.forEach((r, i) => {
+        valoresObj[`R${i + 1}`] = r; // R1, R2, ...
+      });
+    
       data = {
         formula: "divisor_corriente",
-        valores: { It: valores.It, R1: valores.R1, R2: valores.R2 },
+        valores: valoresObj,
       };
     }
     
@@ -96,19 +105,31 @@ function App() {
       const result = await response.json();
 
       if (result.resultado !== undefined) {
-        if (typeof result.resultado === "object") {
-          // Caso especial: divisor de corriente u otros resultados con múltiples valores
-          const { I1, I2, Rt } = result.resultado;
-          setResultado(
-            `I1 = ${I1.toFixed(3)} A, I2 = ${I2.toFixed(3)} A, Rt = ${Rt.toFixed(3)} Ω`
-          );
+        const r = result.resultado;
+
+        // Si viene objeto con campo 'corrientes' => divisor de corriente generalizado
+        if (r && typeof r === "object" && r.corrientes) {
+          // r.corrientes es un mapa { R1: val, R2: val, ... }
+          const parts = [];
+          Object.entries(r.corrientes).forEach(([k, val]) => {
+            parts.push(`${k}: ${Number(val).toFixed(3)} A`);
+          });
+          // añadimos V y Rt si quieres
+          parts.push(`V (tensión común): ${Number(r.V).toFixed(3)} V`);
+          parts.push(`Rt: ${Number(r.Rt).toFixed(3)} Ω`);
+
+          setResultado(parts.join(" — "));
+        } else if (typeof r === "object") {
+          // Resultado objetual genérico: mostrar JSON legible
+          setResultado(JSON.stringify(r));
         } else {
-          // Casos normales (resultado numérico)
-          setResultado(`Resultado: ${result.resultado.toFixed(3)}`);
+          // Resultado numérico
+          setResultado(`Resultado: ${Number(r).toFixed(3)}`);
         }
       } else {
         setResultado("Error: " + (result.error || "verifica los valores"));
       }
+
 
     } catch (error) {
       setResultado("Error de conexión con el servidor");
@@ -348,6 +369,71 @@ function App() {
                   }}
                   style={{
                     width: "100px",
+                    padding: "5px",
+                    textAlign: "center",
+                  }}
+                />
+              ))}
+            </div>
+          </>
+        ) : formula === "divisor_corriente" ? (
+          <>
+            <label>
+              It(corriente total):
+              <input
+                type="number"
+                value={valores.It || ""}
+                onChange={(e) => cambiarValor("It", e.target.value)}
+                style={{ width: "80", marginLeft: "10px", marginRight: "10px" }}
+              />
+            </label>
+      
+            <label>
+              Número de resistencias:
+              <input
+                type="number"
+                min="2"
+                max="10"
+                value={numResistenciasDivisor}
+                onChange={(e) => {
+                  const n = parseInt(e.target.value);
+                  setNumResistenciasDivisor(n);
+                  const nuevas = [...resistenciasDivisor];
+                  if (n > nuevas.length) {
+                    while (nuevas.length < n) nuevas.push("");
+                  } else {
+                    nuevas.length = n;
+                  }
+                  setResistenciasDivisor(nuevas);
+                }}
+                style={{ width: "80px", marginLeft: "10px" }}
+              />
+            </label>
+      
+            <div
+              style={{
+                marginTop: "15px",
+                display: "flex",
+                flexWrap: "wrap",
+                justifyContent: "center",
+                gap: "10px",
+                maxWidth: "600px",
+                margin: "15px auto",
+              }}
+            >
+              {resistenciasDivisor.map((valor, i) => (
+                <input
+                  key={i}
+                  type="number"
+                  placeholder={`R${i + 1}`}
+                  value={valor}
+                  onChange={(e) => {
+                    const nuevas = [...resistenciasDivisor];
+                    nuevas[i] = e.target.value;
+                    setResistenciasDivisor(nuevas);
+                  }}
+                  style={{
+                    width: "80px",
                     padding: "5px",
                     textAlign: "center",
                   }}
