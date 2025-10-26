@@ -146,7 +146,7 @@ function App() {
         style={{ marginLeft: "10px" }}
       >
         <option value="ohm">Ley de Ohm</option>
-        <option value="potencia">Potencia</option>
+        <option value="potencia">Ley de Watt</option>
         <option value="res_serie">Resistencias en serie</option>
         <option value="res_paralelo">Resistencias en paralelo</option>
         <option value="divisor">Divisor de tensión</option>
