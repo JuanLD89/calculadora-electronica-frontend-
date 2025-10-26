@@ -4,7 +4,7 @@ import serie from './assets/res_serie.png';
 import paralelo from './assets/res_paralelo.png';
 import potencia from './assets/potencia.png';
 import ohm from './assets/Ohm.jpg';
-//import divisorCorriente from './assets/divisor_corriente.png';
+import divisorCorriente from './assets/divisor_corriente.png';
 
 function App() {
   const [numResistenciasParalelo, setNumResistenciasParalelo] = useState(2);
@@ -94,11 +94,22 @@ function App() {
       );
   
       const result = await response.json();
+
       if (result.resultado !== undefined) {
-        setResultado(`Resultado: ${result.resultado.toFixed(3)}`);
+        if (typeof result.resultado === "object") {
+          // Caso especial: divisor de corriente u otros resultados con múltiples valores
+          const { I1, I2, Rt } = result.resultado;
+          setResultado(
+            `I1 = ${I1.toFixed(3)} A, I2 = ${I2.toFixed(3)} A, Rt = ${Rt.toFixed(3)} Ω`
+          );
+        } else {
+          // Casos normales (resultado numérico)
+          setResultado(`Resultado: ${result.resultado.toFixed(3)}`);
+        }
       } else {
         setResultado("Error: " + (result.error || "verifica los valores"));
       }
+
     } catch (error) {
       setResultado("Error de conexión con el servidor");
     }
@@ -211,8 +222,8 @@ function App() {
                 ? potencia
                 : formula === "ohm"
                 ? ohm
-                //: formula === "divisor_corriente"
-                //? divisorCorriente
+                : formula === "divisor_corriente"
+                ? divisorCorriente
                 : null
             }
             alt={formula}
