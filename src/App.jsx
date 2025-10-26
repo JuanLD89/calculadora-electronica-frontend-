@@ -384,7 +384,7 @@ function App() {
                 type="number"
                 value={valores.It || ""}
                 onChange={(e) => cambiarValor("It", e.target.value)}
-                style={{ width: "80", marginLeft: "10px", marginRight: "10px" }}
+                style={{ width: "80px", marginLeft: "10px", marginRight: "10px" }}
               />
             </label>
       
