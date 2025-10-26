@@ -119,7 +119,7 @@ function App() {
           parts.push(`V (tensión común): ${Number(r.V).toFixed(3)} V`);
           parts.push(`Rt: ${Number(r.Rt).toFixed(3)} Ω`);
 
-          setResultado(parts.join(" — "));
+          setResultado(parts.join("\n"));
         } else if (typeof r === "object") {
           // Resultado objetual genérico: mostrar JSON legible
           setResultado(JSON.stringify(r));
