@@ -74,8 +74,8 @@ function App() {
     } else if (formula === "divisor_corriente") {
       const valoresObj = { It: valores.It }; 
     
-      resistenciasParalelo.forEach((r, i) => {
-        valoresObj[`R${i + 1}`] = r; // R1, R2, ...
+      resistenciasDivisor.forEach((r, i) => {
+        valoresObj[`R${i + 1}`] = r; // R1, R2, R3...
       });
     
       data = {
@@ -83,6 +83,7 @@ function App() {
         valores: valoresObj,
       };
     }
+    
     
     
     else {
