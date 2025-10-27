@@ -456,17 +456,17 @@ function App() {
       {resultado && (
         <pre
           style={{
-            marginTop: "30px",
-            whiteSpace: "pre-wrap",
+            marginTop: "20px",
+            whiteSpace: "pre-line",
+            fontWeight: "bold",
             textAlign: "center",
-            background: "#f5f5f5",
-            padding: "20px",
-            borderRadius: "10px",
+            fontSize: "18px",
           }}
         >
           {resultado}
         </pre>
       )}
+
 
     </div>
   );
