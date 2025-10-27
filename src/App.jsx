@@ -93,40 +93,34 @@ function App() {
       console.log("Payload a enviar:", JSON.stringify(data));
 
       const response = await fetch("https://calculadora-electronica-backend.vercel.app/calcular", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
 
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(data),
-        }
-      );
-  
       const result = await response.json();
+      console.log("Respuesta del backend:", result);
 
-      if (result.resultado !== undefined) {
-        const r = result.resultado;
-
-        // Si viene objeto con campo 'corrientes' => divisor de corriente generalizado
-        if (r && typeof r === "object" && r.corrientes) {
-          // r.corrientes es un mapa { R1: val, R2: val, ... }
-          const parts = [];
-          Object.entries(r.corrientes).forEach(([k, val]) => {
-            parts.push(`${k}: ${Number(val).toFixed(3)} A`);
-          });
-          // añadimos V y Rt si quieres
-          parts.push(`V (tensión común): ${Number(r.V).toFixed(3)} V`);
-          parts.push(`Rt: ${Number(r.Rt).toFixed(3)} Ω`);
-
-          setResultado(parts.join(" — "));
-        } else if (typeof r === "object") {
-          // Resultado objetual genérico: mostrar JSON legible
-          setResultado(JSON.stringify(r));
-        } else {
-          // Resultado numérico
-          setResultado(`Resultado: ${Number(r).toFixed(3)}`);
-        }
-      } else {
-        setResultado("Error: " + (result.error || "verifica los valores"));
+      if (result.error) {
+        setResultado("⚠️ Error: " + result.error);
+        return;
       }
+
+      const r = result.resultado;
+
+      if (typeof r === "string") {
+        // texto (como divisor de corriente)
+        setResultado(r);
+      } else if (typeof r === "number") {
+        // número (como resistencia equivalente)
+        setResultado(`Resultado: ${r.toFixed(3)}`);
+      } else if (typeof r === "object" && r !== null) {
+        // objeto JSON (por si en el futuro devuelves datos estructurados)
+        setResultado(JSON.stringify(r, null, 2));
+      } else {
+        setResultado("Resultado desconocido");
+}
+
 
 
     } catch (error) {
