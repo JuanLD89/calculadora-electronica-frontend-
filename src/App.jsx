@@ -72,24 +72,21 @@ function App() {
         ),
       };
     } else if (formula === "divisor_corriente") {
-      const valoresObj = { It: valores.It }; 
+      const valoresObj = { It: valores.It };
     
       resistenciasDivisor.forEach((r, i) => {
-        valoresObj[`R${i + 1}`] = r; // R1, R2, R3...
+        valoresObj[`R${i + 1}`] = r; // R1, R2, ...
       });
     
       data = {
         formula: "divisor_corriente",
         valores: valoresObj,
       };
-    }
-    
-    
-    
-    else {
+    } else {
       // resto de fórmulas ya existentes (resistencias, divisor...)
       data = { formula, valores };
     }
+    
 
   
     try {
@@ -465,10 +462,11 @@ function App() {
         <pre
           style={{
             marginTop: "20px",
-            whiteSpace: "pre-line",
-            fontWeight: "bold",
-            textAlign: "center",
-            fontSize: "18px",
+            whiteSpace: "pre-wrap",
+            textAlign: "left",
+            background: "#f5f5f5",
+            padding: "10px",
+            borderRadius: "8px",
           }}
         >
           {resultado}
