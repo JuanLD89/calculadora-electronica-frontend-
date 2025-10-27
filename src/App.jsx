@@ -82,7 +82,8 @@ function App() {
         formula: "divisor_corriente",
         valores: valoresObj,
       };
-    } else {
+    }
+    else {
       // resto de fórmulas ya existentes (resistencias, divisor...)
       data = { formula, valores };
     }
@@ -455,12 +456,12 @@ function App() {
       {resultado && (
         <pre
           style={{
-            marginTop: "20px",
+            marginTop: "30px",
             whiteSpace: "pre-wrap",
-            textAlign: "left",
+            textAlign: "center",
             background: "#f5f5f5",
-            padding: "10px",
-            borderRadius: "8px",
+            padding: "20px",
+            borderRadius: "10px",
           }}
         >
           {resultado}
