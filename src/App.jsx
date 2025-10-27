@@ -119,7 +119,7 @@ function App() {
           parts.push(`V (tensión común): ${Number(r.V).toFixed(3)} V`);
           parts.push(`Rt: ${Number(r.Rt).toFixed(3)} Ω`);
 
-          setResultado(parts.join("\n"));
+          setResultado(parts.join(" — "));
         } else if (typeof r === "object") {
           // Resultado objetual genérico: mostrar JSON legible
           setResultado(JSON.stringify(r));
@@ -461,7 +461,20 @@ function App() {
         Calcular
       </button>
   
-      {resultado && <h2 style={{ marginTop: "20px" }}>{resultado}</h2>}
+      {resultado && (
+        <pre
+          style={{
+            marginTop: "20px",
+            whiteSpace: "pre-line",
+            fontWeight: "bold",
+            textAlign: "center",
+            fontSize: "18px",
+          }}
+        >
+          {resultado}
+        </pre>
+      )}
+
     </div>
   );
   
